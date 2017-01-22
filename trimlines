@@ -1,0 +1,13 @@
+#!/bin/bash
+# Check out http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
+# The basis for this shell script
+# https://www.linux.com/learn/how-scan-and-ocr-pro-open-source-tools
+
+file_count=$(ls -1 tesseract-???.txt |wc -l)
+for i in $(seq --format=%003.f 1 $file_count)
+do
+  tail -n +2 tesseract-$i.txt >text-$i.txt
+done

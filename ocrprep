@@ -1,0 +1,15 @@
+#!/bin/bash
+# Check out http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
+# The basis for this shell script
+# https://www.linux.com/learn/how-scan-and-ocr-pro-open-source-tools
+
+
+file_count=$(ls -1 scan-???.pnm |wc -l)
+for i in $(seq --format=%003.f 1 $file_count); do
+  echo preparing page $i
+  unpaper scan-$i.pnm unpapered-$i.pnm
+  convert unpapered-$i.pnm prepared-$i.tif && rm unpapered-$i.pnm
+done

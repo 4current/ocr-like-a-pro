@@ -1,0 +1,35 @@
+#!/bin/bash
+# Check out http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
+# The basis for this shell script
+# https://www.linux.com/learn/how-scan-and-ocr-pro-open-source-tools
+
+scanners=( $(scanimage -L |sed -n 's/^device `\(.*\)'\'' is a \(.*\)$/\2s,\1/p') )
+
+for n in $(seq ${#scanners[@]})
+do
+  i=$(( $n - 1 ))
+  description=$(echo ${scanners[$i]} |cut -d, -f1)
+  device=$(echo ${scanners[$i]} |cut -d, -f2)
+  echo "$n)  $description"
+done
+read -p "Select a scan device: " user_choice
+i=$(( $user_choice - 1 ))
+active_scanner=$( echo ${scanners[$i]} |cut -d, -f2 )
+
+scanimage --help --device $active_scanner
+
+for i in $(seq --format=%003.f 1 150)
+do
+  read -p "Prepare page $i and press Enter"
+  scanimage \
+    --device $active_scanner \
+    --format=pnm \
+    --mode 'Gray' \
+    --resolution 300 \
+    --brightness -20 \
+    --contrast 15 \
+    >scan-$i.pnm
+done

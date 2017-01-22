@@ -1,0 +1,6 @@
+#!/bin/sh
+# newlines to spaces
+tr '\n' ' '
+# only one space character at a time
+sed 's/[[:blank:[[{2,}/ /'
+
